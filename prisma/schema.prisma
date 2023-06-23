@@ -1,0 +1,65 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model AuthUser {
+  id           String        @id @unique @db.VarChar(15)
+  auth_session AuthSession[]
+  auth_key     AuthKey[]
+  // here you can add custom fields for your user
+  // e.g. name, email, username, roles, etc.
+  email        String?       @unique @db.VarChar(50)
+  firstName    String?       @map("first_name") @db.VarChar(50)
+  lastName     String?       @map("last_name") @db.VarChar(50)
+  photoURL     String?       @map("photo_url") @db.VarChar(400)
+  createdAt    DateTime      @default(now()) @map("created_at")
+  updatedAt    DateTime      @default(now()) @updatedAt @map("updated_at")
+  chats        Chat[]
+
+  @@map("users")
+}
+
+model AuthSession {
+  id             String   @id @unique @db.VarChar(40)
+  user_id        String   @db.VarChar(15)
+  active_expires BigInt
+  idle_expires   BigInt
+  auth_user      AuthUser @relation(references: [id], fields: [user_id], onDelete: Cascade)
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@index([user_id])
+  @@map("user_auth_sessions")
+}
+
+model AuthKey {
+  id              String   @id @unique @db.VarChar(28)
+  hashed_password String?  @db.VarChar(150)
+  user_id         String   @db.VarChar(15)
+  primary_key     Boolean
+  expires         BigInt?
+  auth_user       AuthUser @relation(references: [id], fields: [user_id], onDelete: Cascade)
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@index([user_id])
+  @@map("user_auth_keys")
+}
+
+model Chat {
+  id        String   @id @unique @db.VarChar(15)
+  userId    String?  @map("user_id") @db.VarChar(15)
+  title     String   @default("Untitled") @db.VarChar(100)
+  messages  Json[]   @default([]) @db.JsonB
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  user AuthUser? @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@map(name: "scenarios")
+}

@@ -1,0 +1,81 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300&display=swap');
+
+html,
+body {
+  @apply h-full overflow-hidden;
+}
+:root {
+  --theme-font-family-base: 'Poppins', sans-serif;
+  --theme-font-family-heading: 'Poppins', sans-serif;
+}
+
+.h3 {
+  @apply tracking-wide;
+}
+
+/* #region Messages styling */
+.message a {
+  @apply underline decoration-orange-500;
+}
+.message h1 {
+  @apply mt-8 mb-6;
+  @apply text-2xl text-slate-200;
+}
+.message h2 {
+  @apply mt-6 mb-4;
+  @apply text-xl text-slate-100;
+}
+.message h3 {
+  @apply mt-4 mb-4;
+  @apply text-lg text-slate-50;
+}
+.message p {
+  @apply mb-4 last:mb-0;
+  @apply text-base font-normal;
+}
+.message ol,
+.message ul {
+  @apply my-2 mb-10;
+  @apply pl-6 lg:px-12;
+  @apply text-base font-normal;
+  letter-spacing: 0.00625rem;
+}
+.message ol li,
+.message ul li {
+  @apply mb-4 last:mb-0;
+}
+.message ol {
+  @apply list-decimal;
+}
+.message ul {
+  @apply list-disc;
+}
+.message blockquote {
+  @apply text-gray-50 italic text-2xl font-light;
+  @apply relative py-8 px-6 bg-gray-800/50 md:px-10;
+  @apply my-12 md:mx-28;
+  @apply border-l-4 border-orange-500;
+  letter-spacing: 0.0125rem;
+}
+.message strong {
+  @apply font-bold;
+}
+
+.message pre {
+  @apply overflow-x-auto p-4 rounded-md bg-gray-800 text-gray-300 my-4 font-mono;
+}
+
+.message p > code {
+  @apply font-mono bg-gray-600 rounded py-0.5 px-1 text-gray-50 text-base;
+}
+
+@screen sm {
+  /* .message img {
+    max-width: 80%;
+    max-height: 25rem;
+  } */
+  .message > .well {
+    max-width: 80%;
+  }
+}
+/* #endregion */
