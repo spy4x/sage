@@ -1,38 +1,33 @@
-# create-svelte
+# Sage
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte).
+A bot powered by OpenAI ChatGPT and Dall-e.
 
-## Creating a project
+## Requirements
 
-If you're seeing this, you've probably already done this step. Congrats!
+To run the bot your'll need OpenAI API key. To deploy the bot to AWS you'll need AWS account and AWS CLI configured.
 
-```bash
-# create a new project in the current directory
-npm create svelte@latest
-
-# create a new project in my-app
-npm create svelte@latest my-app
-```
-
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+Put your OpenAI API key to `.env` file:
 
 ```bash
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
+OPENAI_API_KEY=...
 ```
 
-## Building
+## Usage
 
-To create a production version of your app:
+Install dependencies:
 
 ```bash
-npm run build
+pnpm i
 ```
 
-You can preview the production build with `npm run preview`.
+Run locally:
 
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+```bash
+pnpm dev
+```
+
+Deploy with SST to AWS:
+
+```bash
+pnpm sst:deploy
+```

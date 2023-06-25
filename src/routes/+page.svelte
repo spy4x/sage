@@ -68,9 +68,9 @@
         </div>
       {/if}
       {#if updateOperation?.status === AsyncOperationStatus.IN_PROGRESS}
-        <div class="flex justify-end items-center">
+        <div class="flex items-center gap-3">
+          <Avatar src="/favicon.webp" width="w-10" />
           <Loading size="h-5 w-5" />
-          <Avatar src="/favicon.webp" size="h-6 w-6" />
         </div>
       {/if}
 
