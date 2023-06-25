@@ -7,15 +7,8 @@
   import '../app.postcss';
 
   import { AppBar, AppShell, Toast, type PopupSettings } from '@skeletonlabs/skeleton';
-  // import { AuthOperation, auth } from '@stores';
-  // import { Loading } from '@components';
-  // import { AsyncOperationStatus } from '@shared';
   import { initPopups } from '@client/services';
   initPopups();
-
-  // async function signOut() {
-  // 	await auth.signOut();
-  // }
 
   const userProfileDropdown: PopupSettings = {
     event: 'click',
@@ -23,15 +16,6 @@
     placement: 'bottom',
     closeQuery: 'li',
   };
-
-  // onMount(() => {
-  // 	const unsubscribe = auth.onAuthStateChange((user) => {
-  // 		if (!user) {
-  // 			goto('/auth');
-  // 		}
-  // 	});
-  // 	return unsubscribe;
-  // });
 </script>
 
 <!-- App Shell -->

@@ -104,3 +104,14 @@ export const ChatSchema = z.object({
 
 export type Chat = z.infer<typeof ChatSchema>;
 // #endregion
+
+// #region OpenAI Callable Functions
+export type PublicFunction = Function & {
+  /** What it does */
+  description: string;
+  /** The validation schema for the arguments */
+  argsSchema?: z.Schema;
+  /** The JSON schema for the function arguments */
+  parameters?: JSONObject;
+};
+// #endregion
