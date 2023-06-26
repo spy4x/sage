@@ -1,6 +1,7 @@
 import type { PublicFunction } from '@shared';
 import { z } from 'zod';
 import { openai } from './openai';
+import { shortenURL } from './url-shortener';
 
 function getCurrentLocation(): string {
   return 'Singapore';
@@ -39,10 +40,14 @@ async function drawImagesFromPrompt(params: {
     size: '1024x1024',
     user: params.userId,
   });
-  return response.data.data.map(image => image.url!);
+  return response.data.data.map(image => shortenURL(image.url!));
 }
-drawImagesFromPrompt.description = `Uses OpenAI Dall-e AI to draw images from a prompt and returns an array of URLs. Each URL contains an access token. Use only with the access token.`;
-drawImagesFromPrompt.argsSchema = z.object({ prompt: z.string(), userId: z.string() });
+drawImagesFromPrompt.description = `Uses OpenAI Dall-e AI to draw images from a prompt and returns an array of URLs.`;
+drawImagesFromPrompt.argsSchema = z.object({
+  prompt: z.string(),
+  userId: z.string(),
+  amount: z.number().min(1).max(10).optional(),
+});
 drawImagesFromPrompt.parameters = {
   type: 'object',
   properties: {
@@ -52,7 +57,7 @@ drawImagesFromPrompt.parameters = {
     },
     amount: {
       type: 'number',
-      description: "The number of images to generate. By default it's 1.",
+      description: "The number of images to generate. By default it's 1. Max is 10.",
     },
   },
   required: ['prompt'],
