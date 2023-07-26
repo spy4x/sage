@@ -10,7 +10,7 @@ import { z } from 'zod';
 import { functions } from './functions';
 import { openai, type ChatCompletionFunctions } from './openai';
 
-const MODEL_NAME = 'gpt-3.5-turbo-0613';
+const MODEL_NAME = 'gpt-4'; // 'gpt-3.5-turbo';
 
 const functionsDescription: ChatCompletionFunctions[] = functions.map(f => ({
   name: f.name,

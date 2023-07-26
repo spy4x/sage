@@ -13,8 +13,8 @@
     "lint": "prettier --plugin-search-dir . --check . && eslint .",
     "format": "prettier --plugin-search-dir . --write .",
     "prepare": "husky install",
-    "sst:deploy": "sst deploy",
-    "sst:dev": "sst dev"
+    "sst:deploy": "sst deploy --stage spy4x",
+    "sst:dev": "sst dev -stage dev"
   },
   "dependencies": {
     "marked": "^5.1.0",

@@ -17,7 +17,7 @@ export default {
         timeout: '60 seconds',
         environment,
         customDomain:
-          app.stage === 'prod'
+          app.stage === 'spy4x'
             ? {
                 domainName: 'sage.antonshubin.com',
                 isExternalDomain: true,
