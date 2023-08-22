@@ -1,12 +1,19 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.hd-full {
+  height: 100dvh;
+}
 
 html,
 body {
-  @apply h-full overflow-hidden;
+  @apply overflow-hidden;
+  height: 100dvh;
 }
 :root {
-  --theme-font-family-base: 'Poppins', sans-serif;
-  --theme-font-family-heading: 'Poppins', sans-serif;
+  --theme-font-family-base: sans-serif;
+  --theme-font-family-heading: sans-serif;
 }
 
 .h3 {
@@ -35,7 +42,7 @@ body {
 }
 .message ol,
 .message ul {
-  @apply my-2 mb-10;
+  @apply my-2 mb-4;
   @apply pl-6 lg:px-12;
   @apply text-base font-normal;
   letter-spacing: 0.00625rem;

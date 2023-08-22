@@ -8,23 +8,25 @@ import {
 } from '@shared';
 import { z } from 'zod';
 import { functions } from './functions';
-import { openai, type ChatCompletionFunctions } from './openai';
+import { openai } from './openai';
 
-const MODEL_NAME = 'gpt-4'; // 'gpt-3.5-turbo';
+// const functionsDescription: ChatCompletionFunctions[] = functions.map(f => ({
+//   name: f.name,
+//   description: f.description,
+//   parameters: f.parameters || { type: 'object', properties: {} },
+// }));
 
-const functionsDescription: ChatCompletionFunctions[] = functions.map(f => ({
-  name: f.name,
-  description: f.description,
-  parameters: f.parameters || { type: 'object', properties: {} },
-}));
-
-export async function sage(messages: Message[], userId: string): Promise<Message[]> {
+export async function sage(
+  messages: Message[],
+  userId: string,
+  model: 'gpt-4' | 'gpt-3.5-turbo' = 'gpt-3.5-turbo',
+): Promise<Message[]> {
   const flaggedMessages = await validateUserInput(messages);
   if (flaggedMessages) {
     return flaggedMessages;
   }
   const messagesWithPersona = configurePersona(messages);
-  return createChatCompletion(messagesWithPersona, functions, userId);
+  return createChatCompletion(messagesWithPersona, functions, userId, model);
 }
 
 /** Returns undefined if the user input is valid, otherwise returns the flagged messages */
@@ -35,10 +37,10 @@ async function validateUserInput(messages: Message[]): Promise<undefined | Messa
     throw new Error('Last message has no content');
   }
   const startTime = Date.now();
-  const validationResponse = await openai.createModeration({
+  const validationResponse = await openai.moderations.create({
     input: lastMessageContent,
   });
-  const validation = validationResponse.data.results[0];
+  const validation = validationResponse.results[0];
   if (validation.flagged) {
     lastMessage.isFlagged = true;
     lastMessage.durationMs = Date.now() - startTime;
@@ -60,6 +62,7 @@ async function createChatCompletion(
   messages: Message[],
   functions: PublicFunction[],
   userId: string,
+  model: 'gpt-4' | 'gpt-3.5-turbo',
   depth = 0,
 ): Promise<Message[]> {
   if (depth > 10) {
@@ -68,17 +71,17 @@ async function createChatCompletion(
 
   try {
     const chatCompletionStart = Date.now();
-    const response = await openai.createChatCompletion({
-      model: MODEL_NAME,
+    const response = await openai.chat.completions.create({
+      model,
       messages: z.array(ChatCompletionMessageSchema).parse(messages),
-      functions: functionsDescription,
+      // functions: functionsDescription,
       user: userId,
     });
     const answerDurationMs = Date.now() - chatCompletionStart;
 
-    const message = response.data.choices[0].message;
+    const message = response.choices[0].message;
     if (!message) {
-      throw new Error('No answer from OpenAI:' + JSON.stringify(response.data, null, 4));
+      throw new Error('No answer from OpenAI:' + JSON.stringify(response, null, 4));
     }
     // #region If function call
     const functionCall = message.function_call;
@@ -111,7 +114,7 @@ async function createChatCompletion(
           content: JSON.stringify(result.result),
         } satisfies Partial<Message>),
       ];
-      return createChatCompletion(updatedMessages, functions, userId, depth + 1);
+      return createChatCompletion(updatedMessages, functions, userId, model, depth + 1);
     }
     // #endregion
 
@@ -126,7 +129,7 @@ async function createChatCompletion(
         } satisfies Partial<Message>),
       ];
     }
-    throw new Error('No answer from OpenAI:' + JSON.stringify(response.data, null, 4));
+    throw new Error('No answer from OpenAI:' + JSON.stringify(response, null, 4));
     // #endregion
   } catch (error: unknown) {
     const axiosError = error as any;

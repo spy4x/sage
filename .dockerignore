@@ -1,0 +1,20 @@
+# 1. Ignore everything
+**/
+**/*
+
+# 2. Add files and directories that should be included
+!src/**
+!sql/**
+!static/**
+!.npmrc
+!package.json
+!pnpm-lock.yaml
+!postcss.config.cjs
+!svelte.config.js
+!tailwind.config.cjs
+!tsconfig.json
+!vite.config.ts
+
+# 3. Bonus step: ignore any unnecessary files that may be inside those allowed directories in 2
+**/.DS_Store
+**/Thumbs.db

@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  app:
+    container_name: sage-app
+    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: dev.dockerfile
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: 256M
+    volumes:
+      - ./src:/app/src
+      - ./static:/app/static
+      - ./package.json:/app/package.json
+      - ./vite.config.ts:/app/vite.config.ts
+      - ./tsconfig.json:/app/tsconfig.json
+      - ./svelte.config.ts:/app/svelte.config.ts
+      - ./tailwind.config.cjs:/app/tailwind.config.cjs
+      - ./postcss.config.cjs:/app/postcss.config.cjs
+    env_file:
+      - .env
+    ports:
+      - 5173:5173
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}

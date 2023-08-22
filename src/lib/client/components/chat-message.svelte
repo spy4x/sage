@@ -2,7 +2,6 @@
   import { markdown } from '@client/services';
   import { Debug } from '@components';
   import { Role, type Message } from '@shared';
-  import { Avatar } from '@skeletonlabs/skeleton';
 
   export let message: Message;
   export let index: number;
@@ -12,10 +11,14 @@
 </script>
 
 {#if message.role === Role.USER}
-  <div class="card p-4 rounded-md space-y-2 variant-ghost-surface">
+  <div class="card rounded-md space-y-2 variant-ghost-surface">
     <header class="flex justify-between items-center gap-3">
       <div class="flex gap-3 items-center">
-        <Avatar src="https://i.pravatar.cc/?img={message.role}" width="w-8" />
+        <img
+          src="https://i.pravatar.cc/?img={message.role}"
+          class="w-8 h-8 rounded-full"
+          alt="You"
+        />
         <p class="font-bold text-lg">You</p>
       </div>
       <button
@@ -35,17 +38,20 @@
         </svg>
       </button>
     </header>
-    <div class="message overflow-auto">{message.content}</div>
+    <div class="message overflow-auto">
+      {@html message.content.replace(/\n/g, '<br />')}
+    </div>
   </div>
 {/if}
 
 {#if message.role === Role.ASSISTANT && message.content}
-  <div class="card p-4 rounded-md space-y-2 variant-soft-tertiary max-w-full">
+  <div class="card rounded-md space-y-2 variant-soft-tertiary max-w-full">
     <header class="flex justify-between items-center">
       <div class="flex items-center gap-3">
-        <Avatar src="/favicon.webp" width="w-8" />
+        <img src="/favicon.webp" class="w-8 h-8 rounded-full" alt="Sage" />
         <p class="font-bold text-lg">Sage</p>
-        <small class="opacity-50">{message.durationMs} ms</small>
+        <!-- duration in seconds -->
+        <small class="opacity-50">{Math.floor((message.durationMs || 0) / 1000)}s</small>
       </div>
       <button
         on:click={() => deleteMessage(index)}
@@ -74,9 +80,9 @@
   <div class="card px-4 py-1 rounded-md space-y-2 variant-ringed-tertiary max-w-full">
     <header class="flex justify-between items-center">
       <div class="flex items-center gap-3">
-        <Avatar src="/favicon.webp" width="w-6" />
+        <img src="/favicon.webp" class="w-6 h-6 rounded-full" alt="Sage" />
         <p class="font-bold text-lg">Calling function...</p>
-        <small class="opacity-50">{message.durationMs} ms</small>
+        <small class="opacity-50">{Math.floor((message.durationMs || 0) / 1000)}s</small>
       </div>
       <div class="flex items-center gap-2">
         <button
@@ -127,7 +133,7 @@
           <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
         </svg>
         <p class="font-bold text-lg">{message.name}</p>
-        <small class="opacity-50">{message.durationMs} ms</small>
+        <small class="opacity-50">{Math.floor((message.durationMs || 0) / 1000)}s</small>
       </div>
       <div class="flex items-center gap-2">
         <button
@@ -159,14 +165,14 @@
       <div class="message overflow-auto">
         {#if message.fnArgs}
           {@html markdown(
-            `\`\`\`json 
+            `\`\`\`json
 ${JSON.stringify(JSON.parse(message.fnArgs), null, 4)}
 \`\`\``,
           )}
         {/if}
         {#if message.content}
           {@html markdown(
-            `\`\`\`json 
+            `\`\`\`json
 ${JSON.stringify(JSON.parse(message.content), null, 4)}
 \`\`\``,
           )}

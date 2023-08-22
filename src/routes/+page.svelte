@@ -1,14 +1,12 @@
 <script lang="ts">
-  import ChatMessage from '@components/chat-message.svelte';
-  import Debug from '@components/debug.svelte';
-  import Loading from '@components/loading.svelte';
   import { AsyncOperationStatus, EntityOperationType, MessageSchema, type Message } from '@shared';
-  import { Avatar } from '@skeletonlabs/skeleton';
   import { chats } from '@stores';
   import { onMount } from 'svelte';
+  import { ChatMessage, Debug, Loading, ModelSelector } from '@components';
 
   let elemChat: HTMLElement;
   let currentMessage = '';
+  let messageInput: HTMLTextAreaElement;
   $: updateOperation = chats.getOperation($chats.chat.id, EntityOperationType.UPDATE);
 
   function scrollChatBottom(behavior?: ScrollBehavior): void {
@@ -26,14 +24,20 @@
       messages: [...$chats.chat.messages, message],
     });
     currentMessage = '';
+    resizeTextarea();
     scrollChatBottom('smooth');
   }
 
-  function onPromptKeydown(event: KeyboardEvent): void {
-    if (['Enter'].includes(event.code)) {
-      event.preventDefault();
+  function submitOnEnter(e: KeyboardEvent): void {
+    const specialKey = e.metaKey || e.ctrlKey || e.shiftKey || e.altKey;
+    // if Special key + Enter = new line
+    if (e.key === 'Enter' && !specialKey) {
       addMessage();
     }
+  }
+  function resizeTextarea(): void {
+    messageInput.style.height = 'auto'; // Reset the height to auto
+    messageInput.style.height = `${messageInput.scrollHeight}px`; // Set the new height based on the scroll height
   }
 
   function deleteMessage(index: number): void {
@@ -46,30 +50,28 @@
   // When DOM mounted, scroll to bottom
   onMount(() => {
     scrollChatBottom();
-    const unsubscribe = chats.onNewMessage($chats.chat.id, () => scrollChatBottom('smooth'));
-    return unsubscribe;
+    return chats.onNewMessage($chats.chat.id, () => scrollChatBottom('smooth'));
   });
 </script>
 
-<section class="container mx-auto max-w-[800px] h-full pt-4">
-  <div class="card chat w-full h-full grid grid-rows-[auto_75px]">
+<section class="container mx-auto max-w-[800px] h-full">
+  <div class="card chat w-full h-full grid grid-rows-[1fr_auto] gap-4">
     <!-- #region Chat -->
-    <section bind:this={elemChat} class="p-4 overflow-y-auto space-y-4 max-w-full">
+    <section bind:this={elemChat} class="overflow-y-auto space-y-6 max-w-full">
       {#if $chats.chat.messages.length}
         {#each $chats.chat.messages as message, index}
           <ChatMessage {message} {index} {deleteMessage} />
         {/each}
       {:else}
         <div class="w-full h-full grid items-center">
-          <div>
-            <h3 class="h3 text-center opacity-50 mb-3">No messages yet.</h3>
-            <p class="text-center opacity-50">Start a conversation using input below.</p>
+          <div class="text-center">
+            <h3 class="h3 opacity-50 mb-3">No messages yet.</h3>
+            <p class="opacity-50 mb-3">Start a conversation using input below.</p>
           </div>
         </div>
       {/if}
       {#if updateOperation?.status === AsyncOperationStatus.IN_PROGRESS}
         <div class="flex items-center gap-3">
-          <Avatar src="/favicon.webp" width="w-10" />
           <Loading size="h-5 w-5" />
         </div>
       {/if}
@@ -83,25 +85,22 @@
     <!-- #endregion -->
 
     <!-- #region Prompt -->
-    <section class="border-t border-surface-500/30 p-4">
-      <div class="input-group input-group-divider grid-cols-[auto_80px] rounded-container-token">
-        <textarea
-          bind:value={currentMessage}
-          class="bg-transparent border-0 ring-0 min-h-[40px]"
-          name="prompt"
-          id="prompt"
-          placeholder="Write a message..."
-          rows="1"
-          on:keydown={onPromptKeydown}
-        />
-        <button
-          class="text-center {currentMessage ? 'variant-filled-primary' : 'input-group-shim'}"
-          on:click={addMessage}
-        >
-          Send
-        </button>
+    <div class="w-full text-right">
+      <div class="mb-2">
+        <ModelSelector model={$chats.chat.model} on:change={e => chats.setModel(e.detail)} />
       </div>
-    </section>
+      <textarea
+        bind:value={currentMessage}
+        bind:this={messageInput}
+        class="block w-full rounded-md border-0 py-1.5 bg-slate-100 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 min-h-[20px]"
+        name="prompt"
+        id="prompt"
+        placeholder="Write a message..."
+        rows="1"
+        on:keydown={submitOnEnter}
+        on:input={resizeTextarea}
+      />
+    </div>
     <!-- #endregion -->
   </div>
 </section>

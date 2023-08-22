@@ -15,8 +15,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({ message: 'Message is flagged' }, { status: 403 });
   }
   try {
-    const messages = await sage(chat.messages, 'userId_123');
-    chat.messages = messages;
+    chat.messages = await sage(chat.messages, 'userId_123', chat.model);
     return json(chat);
   } catch (error: unknown) {
     console.error(error);

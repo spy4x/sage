@@ -11,3 +11,5 @@ vite.config.ts.timestamp-*
 .vscode/database-client-config.json
 .vercel
 .sst
+.idea
+.vscode

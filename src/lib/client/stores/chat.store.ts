@@ -7,8 +7,8 @@ import {
   type Chat,
   type RequestError,
   type ValidationError,
+  Model,
 } from '@shared';
-import { toastStore } from '@skeletonlabs/skeleton';
 import { get, writable } from 'svelte/store';
 import { request } from './helpers';
 
@@ -61,6 +61,9 @@ export const chats = {
   update: async (chat: Chat): Promise<void> => {
     mutate({ chat });
   },
+  setModel: (model: Model): void => {
+    mutate({ chat: { ...get(store).chat, model } });
+  },
   message: async (chat: Chat): Promise<void> => {
     const existingOperation = chats.getOperation(chat.id, EntityOperationType.UPDATE);
     if (existingOperation?.status === AsyncOperationStatus.IN_PROGRESS) {
@@ -86,11 +89,6 @@ export const chats = {
 
     if (updatedChat) {
       mutate({ chat: updatedChat });
-    } else {
-      toastStore.trigger({
-        message: 'Message sending failed',
-        background: 'variant-filled-warning',
-      });
     }
   },
 

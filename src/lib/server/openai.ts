@@ -1,7 +1,8 @@
-import { Configuration, OpenAIApi, type ChatCompletionFunctions } from 'openai';
+import { env } from '$env/dynamic/private';
+import OpenAI from 'openai';
 
-const apiKey = process.env.OPENAI_API_KEY;
-const configuration = new Configuration({ apiKey });
-const openai = new OpenAIApi(configuration);
+const openai = new OpenAI({
+  apiKey: env.OPENAI_API_KEY,
+});
 
-export { ChatCompletionFunctions, openai };
+export { openai };

@@ -68,6 +68,10 @@ export enum Role {
   SYSTEM = 'system',
   FUNCTION = 'function',
 }
+export enum Model {
+  GPT3= 'gpt-3.5-turbo',
+  GPT4 = 'gpt-4',
+}
 
 export const ChatCompletionMessageSchema = z.object({
   role: z.nativeEnum(Role).default(Role.USER),
@@ -98,6 +102,7 @@ export const ChatSchema = z.object({
   id: z.string().default(() => getRandomString()),
   title: z.string().max(50).default(''),
   messages: z.array(MessageSchema).default([]),
+  model: z.nativeEnum(Model).default(Model.GPT3),
   createdAt: z.coerce.date().default(() => new Date()),
   updatedAt: z.coerce.date().default(() => new Date()),
 });
