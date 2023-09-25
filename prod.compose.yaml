@@ -25,7 +25,7 @@ services:
   sage:
     container_name: sage
     build:
-      context: .
+      context: ./sage
       dockerfile: prod.dockerfile
     restart: unless-stopped
     deploy:
@@ -33,10 +33,8 @@ services:
         limits:
           cpus: '0.25'
           memory: 256M
-    ports:
-      - 3000:3000
     env_file:
-      - .env.prod
+      - ./sage/.env.prod
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.app.rule=Host(`sage.antonshubin.com`)"
