@@ -89,6 +89,22 @@ export const chats = {
 
     if (updatedChat) {
       mutate({ chat: updatedChat });
+      Notification.requestPermission().then(perm => {
+        console.log(perm);
+        if (perm === 'granted') {
+          const notification = new Notification('Example notification', {
+            body: Math.random(),
+            data: { hello: 'world' },
+            // icon: 'Logo Centered.png',
+            // tag: "Welcome Message",
+          });
+          console.log(notification);
+
+          notification.addEventListener('error', e => {
+            alert('error');
+          });
+        }
+      });
     }
   },
 
