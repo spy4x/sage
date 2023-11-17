@@ -69,8 +69,8 @@ export enum Role {
   FUNCTION = 'function',
 }
 export enum Model {
-  GPT3= 'gpt-3.5-turbo',
-  GPT4 = 'gpt-4',
+  GPT3 = 'gpt-3.5-turbo',
+  GPT4 = 'gpt-4-1106-preview',
 }
 
 export const ChatCompletionMessageSchema = z.object({

@@ -10,7 +10,7 @@
     "dev:docker:clean": "docker rmi $(docker images -f \"dangling=true\" -q)",
     "prod:docker": "docker compose -f prod.compose.yaml --env-file=.env.prod up",
     "prod:docker:build": "docker compose -f prod.compose.yaml build",
-    "prod:logs": "docker compose logs -f",
+    "prod:logs": "docker compose logs -t -f --tail=\"100\" sage",
     "deploy": "pnpm deploy:copy && pnpm deploy:run",
     "deploy:copy": "rsync -avz -e 'ssh' . ubuntu@54.251.1.59:~/apps/sage --include-from='prod.deploy.files.txt' --exclude '*'",
     "deploy:run": "ssh ubuntu@54.251.1.59 'cd apps && docker compose build && docker compose up -d'",

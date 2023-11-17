@@ -1,10 +1,11 @@
 import {
   ChatCompletionMessageSchema,
-  MessageSchema,
-  Role,
   type JSONValue,
   type Message,
+  MessageSchema,
+  Model,
   type PublicFunction,
+  Role,
 } from '@shared';
 import { z } from 'zod';
 import { functions } from './functions';
@@ -19,7 +20,7 @@ import { openai } from './openai';
 export async function sage(
   messages: Message[],
   userId: string,
-  model: 'gpt-4' | 'gpt-3.5-turbo' = 'gpt-3.5-turbo',
+  model: Model = Model.GPT3,
 ): Promise<Message[]> {
   const flaggedMessages = await validateUserInput(messages);
   if (flaggedMessages) {
@@ -62,7 +63,7 @@ async function createChatCompletion(
   messages: Message[],
   functions: PublicFunction[],
   userId: string,
-  model: 'gpt-4' | 'gpt-3.5-turbo',
+  model: Model,
   depth = 0,
 ): Promise<Message[]> {
   if (depth > 10) {
