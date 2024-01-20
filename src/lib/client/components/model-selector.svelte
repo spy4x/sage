@@ -10,23 +10,14 @@
   }
 </script>
 
-<span class="isolate inline-flex rounded-md shadow-sm">
-  <button
-    on:click={() => set(Model.GPT3)}
-    type="button"
-    class="{model === Model.GPT3
-      ? 'bg-slate-50'
-      : 'bg-slate-300'} relative inline-flex items-center rounded-l-md px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10"
+<span class="isolate inline-flex shadow-sm">
+  <select
+    aria-label="AI Model"
+    class="relative inline-flex items-center pl-4 pr-8 py-2 text-sm font-semibold text-gray-900 bg-slate-300 border border-gray-300 rounded-md hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 focus:ring-slate-300 focus:border-slate-300"
+    bind:value={model}
+    on:change={() => set(model)}
   >
-    ⚡ GPT-3.5
-  </button>
-  <button
-    on:click={() => set(Model.GPT4)}
-    type="button"
-    class="{model === Model.GPT4
-      ? 'bg-slate-50'
-      : 'bg-slate-300'} relative -ml-px inline-flex items-center rounded-r-md px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10"
-  >
-    🧠 GPT-4
-  </button>
+    <option value={Model.GPT4}>🧠 GPT-4</option>
+    <option value={Model.GPT3}>⚡ GPT-3.5</option>
+  </select>
 </span>
