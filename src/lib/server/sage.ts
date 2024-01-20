@@ -65,7 +65,11 @@ async function createChatCompletion(
   userId: string,
   model: Model,
   depth = 0,
+  retries = 0,
 ): Promise<Message[]> {
+  if (retries > 3) {
+    throw new Error('Too many retries');
+  }
   if (depth > 10) {
     throw new Error('Too many recursive calls');
   }
@@ -115,7 +119,7 @@ async function createChatCompletion(
           content: JSON.stringify(result.result),
         } satisfies Partial<Message>),
       ];
-      return createChatCompletion(updatedMessages, functions, userId, model, depth + 1);
+      return createChatCompletion(updatedMessages, functions, userId, model, depth + 1, retries);
     }
     // #endregion
 
@@ -133,6 +137,11 @@ async function createChatCompletion(
     throw new Error('No answer from OpenAI:' + JSON.stringify(response, null, 4));
     // #endregion
   } catch (error: unknown) {
+    if (retries < 3) {
+      retries++;
+      console.log('retrying...', { retries });
+      return createChatCompletion(messages, functions, userId, model, depth + 1, retries);
+    }
     const axiosError = error as any;
     if (axiosError.response) {
       console.error(axiosError.response.status, axiosError.response.data);
