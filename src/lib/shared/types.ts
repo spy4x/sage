@@ -102,7 +102,7 @@ export const ChatSchema = z.object({
   id: z.string().default(() => getRandomString()),
   title: z.string().max(50).default(''),
   messages: z.array(MessageSchema).default([]),
-  model: z.nativeEnum(Model).default(Model.GPT3),
+  model: z.nativeEnum(Model).default(Model.GPT4),
   createdAt: z.coerce.date().default(() => new Date()),
   updatedAt: z.coerce.date().default(() => new Date()),
 });
