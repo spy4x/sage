@@ -8,6 +8,7 @@ import {
   type RequestError,
   type ValidationError,
   Model,
+  Role,
 } from '@shared';
 import { get, writable } from 'svelte/store';
 import { request } from './helpers';
@@ -79,17 +80,33 @@ export const chats = {
       error: null,
     });
 
-    const [error, updatedChat] = await request<Chat>(`/api/chats`, 'POST', chat);
+    const [error, message] = await request<unknown>(`/api/chats`, 'POST', chat);
+    console.log('message', message);
 
     // update operation status
     mutateOperation(chat.id, EntityOperationType.UPDATE, {
-      status: updatedChat ? AsyncOperationStatus.SUCCESS : AsyncOperationStatus.ERROR,
+      status: error ? AsyncOperationStatus.ERROR : AsyncOperationStatus.SUCCESS,
       error: error ? handleRequestError(error) : null,
     });
-
-    if (updatedChat) {
-      mutate({ chat: updatedChat });
+    if (!error) {
+      //add empty message to chat
+      chat.messages.push({ content: '', role: Role.ASSISTANT, id: '' });
+      mutate({ chat });
     }
+
+    const sse = new EventSource(`/api/chats/${chat.id}/stream`);
+    sse.onmessage = e => {
+      const { message } = JSON.parse(e.data);
+      const chat = get(store).chat;
+      //update last message in the chat
+      chat.messages[chat.messages.length - 1].content += message;
+      mutate({ chat });
+    };
+    // handle connection close
+    sse.onerror = e => {
+      console.log('SSE connection closed', e);
+      sse.close();
+    };
   },
 
   /** Subscribe to chat messages updates, returns Unsubscribe function */

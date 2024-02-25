@@ -27,7 +27,7 @@
   },
   "dependencies": {
     "marked": "^7.0.4",
-    "openai": "^4.0.1",
+    "openai": "^4.28.0",
     "zod": "^3.22.2"
   },
   "devDependencies": {

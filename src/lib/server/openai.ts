@@ -14,3 +14,7 @@ const openai = new OpenAI({
 });
 
 export { openai };
+
+export type ChatCompletion = OpenAI.ChatCompletion;
+export type ChatCompletionChunk = OpenAI.ChatCompletionChunk;
+export type { Stream } from 'openai/streaming';
