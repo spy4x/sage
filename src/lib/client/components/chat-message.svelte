@@ -8,6 +8,10 @@
   export let deleteMessage: (index: number) => void;
 
   let showDetails = false;
+
+  function copyToClipboard(text: string): void {
+    navigator.clipboard.writeText(text);
+  }
 </script>
 
 {#if message.role === Role.USER}
@@ -38,8 +42,8 @@
         </svg>
       </button>
     </header>
-    <div class="message overflow-auto">
-      {@html message.content.replace(/\n/g, '<br />')}
+    <div class="message whitespace-pre-wrap">
+      {message.content}
     </div>
   </div>
 {/if}
@@ -53,22 +57,45 @@
         <!-- duration in seconds -->
         <small class="opacity-50">{Math.floor((message.durationMs || 0) / 1000)}s</small>
       </div>
-      <button
-        on:click={() => deleteMessage(index)}
-        class="btn btn-icon btn-icon-sm text-surface-400"
-        title="Delete message"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="h-6 w-6"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          stroke-width="2"
+      <div class="flex gap-3">
+        <!-- Copy to clipboard button -->
+        <button
+          on:click={() => copyToClipboard(message.content)}
+          class="btn btn-icon btn-icon-sm text-surface-400"
+          title="Copy to clipboard"
         >
-          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-        </svg>
-      </button>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"
+            />
+          </svg>
+        </button>
+        <button
+          on:click={() => deleteMessage(index)}
+          class="btn btn-icon btn-icon-sm text-surface-400"
+          title="Delete message"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
     </header>
     <div class="message overflow-auto">
       {@html markdown(message.content)}
