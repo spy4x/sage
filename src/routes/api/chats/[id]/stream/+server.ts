@@ -15,20 +15,16 @@ export const GET: RequestHandler = async ({ params }) => {
 
   const readableStream = new ReadableStream({
     async start(controller) {
-      let answer = '';
       for await (const chunk of chatObjects.openAIStream) {
         if (chunk.choices[0]?.delta?.content === undefined) {
-          console.log('chatObjects.openAIStream ended');
           controller.close();
           chatObjects.hasFinished = true;
-          console.log({ answer });
           break;
         }
         // send chunk.choices[0]?.delta?.content to client
-        const content = chunk.choices[0]?.delta?.content;
-        answer += content;
+        const message = chunk.choices[0]?.delta?.content;
         const data = `event: message\ndata: ${JSON.stringify({
-          message: chunk.choices[0].delta.content,
+          chunk: message,
         })}\n\n`;
         controller.enqueue(data);
       }

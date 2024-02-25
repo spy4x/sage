@@ -96,10 +96,10 @@ export const chats = {
 
     const sse = new EventSource(`/api/chats/${chat.id}/stream`);
     sse.onmessage = e => {
-      const { message } = JSON.parse(e.data);
+      const { chunk } = JSON.parse(e.data);
       const chat = get(store).chat;
       //update last message in the chat
-      chat.messages[chat.messages.length - 1].content += message;
+      chat.messages[chat.messages.length - 1].content += chunk;
       mutate({ chat });
     };
     // handle connection close
