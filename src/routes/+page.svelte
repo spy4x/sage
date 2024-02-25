@@ -24,7 +24,7 @@
       messages: [...$chats.chat.messages, message],
     });
     currentMessage = '';
-    resizeTextarea();
+    resizeTextarea(null, true);
     scrollChatBottom('smooth');
   }
 
@@ -32,12 +32,22 @@
     const specialKey = e.metaKey || e.ctrlKey || e.shiftKey || e.altKey;
     // if Special key + Enter = new line
     if (e.key === 'Enter' && !specialKey) {
+      e.preventDefault();
       addMessage();
     }
   }
-  function resizeTextarea(): void {
-    messageInput.style.height = 'auto'; // Reset the height to auto
-    messageInput.style.height = `${messageInput.scrollHeight}px`; // Set the new height based on the scroll height
+  function resizeTextarea(_event: null | Event = null, setZeroFirst = false): void {
+    if (setZeroFirst) {
+      console.log('setZeroFirst');
+      messageInput.style.height = '0px'; // Set to 0 to get the scroll height
+      setTimeout(() => {
+        messageInput.style.height = 'auto'; // Reset the height to auto
+        messageInput.style.height = `${messageInput.scrollHeight}px`; // Set the new height based on the scroll height
+      });
+    } else {
+      messageInput.style.height = 'auto'; // Reset the height to auto
+      messageInput.style.height = `${messageInput.scrollHeight}px`; // Set the new height based on the scroll height
+    }
   }
 
   function deleteMessage(index: number): void {
