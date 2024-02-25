@@ -77,7 +77,7 @@ export const ChatCompletionMessageSchema = z.object({
   role: z.nativeEnum(Role).default(Role.USER),
   content: z
     .string()
-    .max(5000)
+    .max(50000)
     .nullish()
     .transform(val => (!val ? '' : val)),
   name: z.string().max(100).optional(),
