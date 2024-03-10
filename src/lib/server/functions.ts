@@ -9,6 +9,7 @@ async function drawImagesFromPrompt(params: {
   amount: number;
 }): Promise<string[]> {
   const response = await openai.images.generate({
+    model: 'dall-e-3',
     prompt: params.prompt,
     n: params.amount || 1,
     size: '1024x1024',
