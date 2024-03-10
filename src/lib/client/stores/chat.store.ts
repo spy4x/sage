@@ -23,12 +23,14 @@ interface State {
   operations: { [id: string]: { [key: string]: ChatOperation } };
 }
 
-const initialValue: State = {
-  chat: ChatSchema.parse({}),
-  operations: {},
-};
+function generateInitialValue(): State {
+  return {
+    chat: ChatSchema.parse({}),
+    operations: {},
+  };
+}
 
-const store = writable<State>(initialValue);
+const store = writable<State>(generateInitialValue());
 
 function mutate(update: Partial<State>) {
   const prevState = get(store);
@@ -108,6 +110,10 @@ export const chats = {
       console.log('SSE connection closed', e);
       sse.close();
     };
+  },
+
+  clear: (): void => {
+    mutate({ chat: generateInitialValue().chat });
   },
 
   /** Subscribe to chat messages updates, returns Unsubscribe function */

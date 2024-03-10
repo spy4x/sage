@@ -2,7 +2,7 @@
   import { AsyncOperationStatus, EntityOperationType, MessageSchema, type Message } from '@shared';
   import { chats } from '@stores';
   import { onMount } from 'svelte';
-  import { ChatMessage, Debug, IconSend, Loading, ModelSelector } from '@components';
+  import { ChatMessage, Debug, IconSend, IconTrash, Loading, ModelSelector } from '@components';
 
   let elemChat: HTMLElement;
   let currentMessage = '';
@@ -47,6 +47,12 @@
     } else {
       messageInput.style.height = 'auto'; // Reset the height to auto
       messageInput.style.height = `${messageInput.scrollHeight}px`; // Set the new height based on the scroll height
+    }
+  }
+
+  function clearChat(): void {
+    if (confirm('Are you sure want to clear chat? All messages will be deleted.')) {
+      chats.clear();
     }
   }
 
@@ -96,8 +102,14 @@
 
     <!-- #region Prompt -->
     <div class="w-full">
-      <div class="mb-2">
+      <div class="flex gap-1 mb-2 items-stretch">
         <ModelSelector model={$chats.chat.model} on:change={e => chats.setModel(e.detail)} />
+        {#if $chats.chat.messages.length}
+          <button on:click={clearChat} class="btn flex gap-1 items-center">
+            <IconTrash />
+            <span>Clear chat</span>
+          </button>
+        {/if}
       </div>
       <div class="flex gap-1 items-start">
         <textarea
