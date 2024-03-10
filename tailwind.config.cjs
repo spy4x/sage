@@ -4,9 +4,7 @@ import tailwindHighlightjs from 'tailwind-highlightjs';
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   darkMode: 'class',
-  content: [
-    './src/**/*.{html,js,svelte,ts}'
-  ],
+  content: ['./src/**/*.{html,js,svelte,ts}'],
   safelist: [
     {
       pattern: /hljs+/, // for code highlighting
@@ -18,5 +16,5 @@ module.exports = {
       theme: 'github-dark', // for code highlighting
     },
   },
-  plugins: [forms,tailwindHighlightjs],
+  plugins: [forms, tailwindHighlightjs],
 };

@@ -94,9 +94,8 @@ body {
   @apply bg-white/10;
 }
 .btn.btn-surface {
-
 }
 .btn.btn-icon {
-  @apply px-1
+  @apply px-1;
 }
 /* endregion Button */
