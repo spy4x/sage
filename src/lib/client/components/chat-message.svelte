@@ -1,6 +1,6 @@
 <script lang="ts">
   import { markdown } from '@client/services';
-  import {CopyToClipboard, Debug} from '@components';
+  import { CopyToClipboard, Debug } from '@components';
   import { Role, type Message } from '@shared';
 
   export let message: Message;
@@ -55,7 +55,7 @@
       </div>
       <div class="flex gap-3">
         <!-- Copy to clipboard button -->
-        <CopyToClipboard content={message.content}/>
+        <CopyToClipboard content={message.content} />
         <button
           on:click={() => deleteMessage(index)}
           class="btn btn-icon btn-icon-sm text-surface-400"

@@ -59,7 +59,6 @@
 
   // When DOM mounted, scroll to bottom
   onMount(() => {
-    scrollChatBottom();
     return chats.onNewMessage($chats.chat.id, () => scrollChatBottom('smooth'));
   });
 </script>
@@ -91,6 +90,7 @@
           <Debug data={updateOperation?.error} />
         </div>
       {/if}
+      <div data-e2e="bottom-margin" class="pt-[150px]"></div>
     </section>
     <!-- #endregion -->
 

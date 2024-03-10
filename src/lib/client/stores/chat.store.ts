@@ -30,10 +30,11 @@ const initialValue: State = {
 
 const store = writable<State>(initialValue);
 
-function mutate(state: Partial<State>) {
-  store.update(s => ({ ...s, ...state }));
-  if (state.chat) {
-    onMessageSubscribersMap.get(state.chat.id)?.forEach(subscriber => subscriber());
+function mutate(update: Partial<State>) {
+  const prevState = get(store);
+  store.update(s => ({ ...s, ...update }));
+  if (update.chat && prevState.chat.messages.length < update.chat.messages.length) {
+    onMessageSubscribersMap.get(update.chat.id)?.forEach(subscriber => subscriber());
   }
 }
 function mutateOperation(chatId: string, type: EntityOperationType, state: Partial<ChatOperation>) {
