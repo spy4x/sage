@@ -90,6 +90,9 @@ body {
   @apply text-xs font-semibold text-white;
   @apply rounded shadow-sm;
 }
+.btn.variant-primary {
+  @apply bg-indigo-500;
+}
 .btn.btn-secondary {
   @apply bg-white/10;
 }
