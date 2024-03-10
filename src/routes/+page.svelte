@@ -71,6 +71,12 @@
         {#each $chats.chat.messages as message, index}
           <ChatMessage {message} {index} {deleteMessage} />
         {/each}
+        {#if updateOperation?.status === AsyncOperationStatus.IN_PROGRESS}
+          <div class="flex items-center gap-3">
+            <Loading size="h-5 w-5" />
+          </div>
+        {/if}
+        <div data-e2e="bottom-margin" class="pt-[150px]"></div>
       {:else}
         <div class="w-full h-full grid items-center">
           <div class="text-center">
@@ -79,18 +85,12 @@
           </div>
         </div>
       {/if}
-      {#if updateOperation?.status === AsyncOperationStatus.IN_PROGRESS}
-        <div class="flex items-center gap-3">
-          <Loading size="h-5 w-5" />
-        </div>
-      {/if}
 
       {#if updateOperation?.status === AsyncOperationStatus.ERROR}
         <div class="alert variant-filled-warning">
           <Debug data={updateOperation?.error} />
         </div>
       {/if}
-      <div data-e2e="bottom-margin" class="pt-[150px]"></div>
     </section>
     <!-- #endregion -->
 
