@@ -8,6 +8,7 @@ const config = {
     adapter: adapter(),
     alias: {
       '@stores': './src/lib/client/stores',
+      '@client': './src/lib/client',
       '@components': './src/lib/client/components',
       '@shared': './src/lib/shared',
       '@client/services': './src/lib/client/services',
