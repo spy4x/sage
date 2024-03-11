@@ -1,4 +1,4 @@
-<!-- https://heroicons.com/ trash outline -->
+<!-- https://heroicons.com/ v2.1.1 trash outline -->
 
 <svg
   xmlns="http://www.w3.org/2000/svg"

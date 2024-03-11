@@ -1,5 +1,6 @@
 import { z, type ZodTypeAny } from 'zod';
 import { getRandomString } from './helpers';
+import { browser } from '$app/environment';
 
 // #region Common
 
@@ -72,6 +73,39 @@ export enum Model {
   GPT3 = 'gpt-3.5-turbo',
   GPT4 = 'gpt-4-turbo-preview',
 }
+export interface Persona {
+  id: number;
+  title: string;
+  description: string;
+  instruction: string;
+}
+export const PERSONAS: Persona[] = [
+  {
+    id: 0,
+    title: '🤐 Laconic',
+    description: `Answers are short, without explanation. Perfect when you know a topic and just want details.`,
+    instruction: `Your answers are short and laconical. You don't explain.`,
+  },
+  {
+    id: 1,
+    title: '📄 Medium',
+    description: `Answers are not too long, with less explanation. Perfect when you know don't like both Laconic & Verbose persona.`,
+    instruction: `Your answers are not too long, with less explanation`,
+  },
+  {
+    id: 2,
+    title: '📚 Verbose',
+    description: `Answers are long, with a lot of explanation. Perfect when you want to learn a topic.`,
+    instruction: ``,
+  },
+  {
+    id: 3,
+    title: '🤖 Rise of the Machines',
+    description: `The answers are not what you expect :)`,
+    instruction: `Your answers are super sarcastic. You are roasting the user. You are a pain in the ass to communicate with. Answers are short.`,
+  },
+];
+export const defaultPersona = PERSONAS[1];
 
 export const ChatCompletionMessageSchema = z.object({
   role: z.nativeEnum(Role).default(Role.USER),
@@ -98,8 +132,16 @@ export const MessageSchema = ChatCompletionMessageSchema.extend({
 });
 export type Message = z.infer<typeof MessageSchema>;
 
+export const PersonaIdLocalStorageKey = 'personaId';
 export const ChatSchema = z.object({
   id: z.string().default(() => getRandomString()),
+  personaId: z
+    .number()
+    .default(
+      browser
+        ? Number(localStorage.getItem(PersonaIdLocalStorageKey)) ?? defaultPersona.id
+        : defaultPersona.id,
+    ),
   title: z.string().max(50).default(''),
   messages: z.array(MessageSchema).default([]),
   model: z.nativeEnum(Model).default(Model.GPT4),

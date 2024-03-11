@@ -1,9 +1,12 @@
 import {
+  Chat,
   ChatCompletionMessageSchema,
+  defaultPersona,
   type JSONValue,
   type Message,
   MessageSchema,
   Model,
+  PERSONAS,
   type PublicFunction,
   Role,
 } from '@shared';
@@ -17,17 +20,13 @@ import { openai } from './openai';
 //   parameters: f.parameters || { type: 'object', properties: {} },
 // }));
 
-export async function sage(
-  messages: Message[],
-  userId: string,
-  model: Model = Model.GPT3,
-): Promise<Message[]> {
-  const flaggedMessages = await validateUserInput(messages);
+export async function sage(chat: Chat): Promise<Message[]> {
+  const flaggedMessages = await validateUserInput(chat.messages);
   if (flaggedMessages) {
     return flaggedMessages;
   }
-  const messagesWithPersona = configurePersona(messages);
-  return createChatCompletion(messagesWithPersona, functions, userId, model);
+  const messagesWithPersona = getMessagesWithPersona(chat);
+  return createChatCompletion(messagesWithPersona, functions, 'userId_123', chat.model);
 }
 
 /** Returns undefined if the user input is valid, otherwise returns the flagged messages */
@@ -49,14 +48,13 @@ async function validateUserInput(messages: Message[]): Promise<undefined | Messa
   }
 }
 
-function configurePersona(messages: Message[]): Message[] {
-  return [
-    MessageSchema.parse({
-      role: Role.SYSTEM,
-      content: `Format your answer with Markdown.`,
-    } satisfies Partial<Message>),
-    ...messages,
-  ];
+export function getMessagesWithPersona(chat: Chat): Message[] {
+  const persona = PERSONAS.find(p => p.id === chat.personaId) || defaultPersona;
+  const personaMessage = MessageSchema.parse({
+    role: Role.SYSTEM,
+    content: `Format your answer with Markdown. ${persona.instruction}`,
+  } satisfies Partial<Message>);
+  return [personaMessage, ...chat.messages];
 }
 
 async function createChatCompletion(

@@ -2,7 +2,15 @@
   import { AsyncOperationStatus, EntityOperationType, MessageSchema, type Message } from '@shared';
   import { chats } from '@stores';
   import { onMount } from 'svelte';
-  import { ChatMessage, Debug, IconSend, IconTrash, Loading, ModelSelector } from '@components';
+  import {
+    ChatMessage,
+    Debug,
+    IconSend,
+    IconTrash,
+    Loading,
+    ModelSelector,
+    PersonaSelector,
+  } from '@components';
   import { isMobile } from '@client/helpers';
 
   let elemChat: HTMLElement;
@@ -108,6 +116,10 @@
     <div class="w-full">
       <div class="flex gap-1 mb-2 items-stretch">
         <ModelSelector model={$chats.chat.model} on:change={e => chats.setModel(e.detail)} />
+        <PersonaSelector
+          personaId={$chats.chat.personaId}
+          on:change={e => chats.setPersona(e.detail)}
+        />
         {#if $chats.chat.messages.length}
           <button on:click={clearChat} class="btn flex gap-1 items-center">
             <IconTrash />

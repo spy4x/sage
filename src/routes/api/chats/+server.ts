@@ -3,6 +3,7 @@ import { json, type RequestHandler } from '@sveltejs/kit';
 import { openai } from '@server/openai';
 import { z } from 'zod';
 import { chatsMap } from './store';
+import { getMessagesWithPersona } from '@server';
 
 export const POST: RequestHandler = async ({ request }) => {
   const payload = await request.json();
@@ -20,12 +21,12 @@ export const POST: RequestHandler = async ({ request }) => {
   try {
     const openAIStream = await openai.chat.completions.create({
       model: chat.model,
-      messages: z.array(ChatCompletionMessageSchema).parse(chat.messages),
+      messages: z.array(ChatCompletionMessageSchema).parse(getMessagesWithPersona(chat)),
       user: 'userId_123',
       stream: true,
     });
     chatsMap.set(chat.id, { chat, openAIStream, hasFinished: false });
-    // chat.messages = await sage(chat.messages, 'userId_123', chat.model);
+    // chat.messages = await sage(chat);
     return json({ message: 'Chat is being processed' });
   } catch (error: unknown) {
     console.error(error);

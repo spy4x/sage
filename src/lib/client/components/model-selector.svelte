@@ -17,6 +17,7 @@
     bind:value={model}
     on:change={() => set(model)}
   >
+    <option disabled>Model:</option>
     <option value={Model.GPT4}>🧠 GPT-4</option>
     <option value={Model.GPT3}>⚡ GPT-3.5</option>
   </select>

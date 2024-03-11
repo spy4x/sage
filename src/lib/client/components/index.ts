@@ -4,4 +4,5 @@ export { default as CopyToClipboard } from './copyToClipboard.svelte';
 export { default as FormError } from './formError.svelte';
 export { default as ChatMessage } from './chat-message.svelte';
 export { default as ModelSelector } from './model-selector.svelte';
+export { default as PersonaSelector } from './persona-selector.svelte';
 export * from './icons';

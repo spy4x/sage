@@ -9,6 +9,7 @@ import {
   type ValidationError,
   Model,
   Role,
+  PersonaIdLocalStorageKey,
 } from '@shared';
 import { get, writable } from 'svelte/store';
 import { request } from './helpers';
@@ -67,6 +68,10 @@ export const chats = {
   },
   setModel: (model: Model): void => {
     mutate({ chat: { ...get(store).chat, model } });
+  },
+  setPersona: (personaId: number): void => {
+    mutate({ chat: { ...get(store).chat, personaId } });
+    localStorage.setItem(PersonaIdLocalStorageKey, personaId.toString());
   },
   message: async (chat: Chat): Promise<void> => {
     const existingOperation = chats.getOperation(chat.id, EntityOperationType.UPDATE);
