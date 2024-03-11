@@ -5,6 +5,7 @@
   "start_url": "/?pwa=true",
   "display": "standalone",
   "background_color": "#0f172a",
+  "theme_color": "#0f172a",
   "description": "Your AI assistant",
   "lang": "en",
   "categories": ["education", "utilities"],
