@@ -115,7 +115,7 @@
     <!-- #region Prompt -->
     <div class="w-full">
       <div class="flex gap-1 mb-2 items-stretch">
-        <ModelSelector model={$chats.chat.model} on:change={e => chats.setModel(e.detail)} />
+        <!--        <ModelSelector model={$chats.chat.model} on:change={e => chats.setModel(e.detail)} />-->
         <PersonaSelector
           personaId={$chats.chat.personaId}
           on:change={e => chats.setPersona(e.detail)}

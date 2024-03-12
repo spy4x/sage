@@ -84,13 +84,13 @@ export const PERSONAS: Persona[] = [
     id: 0,
     title: '🤐 Laconic',
     description: `Answers are short, without explanation. Perfect when you know a topic and just want details.`,
-    instruction: `Your answers are short and laconical. You don't explain.`,
+    instruction: `Your answers are short and laconic. You don't explain.`,
   },
   {
     id: 1,
     title: '📄 Medium',
-    description: `Answers are not too long, with less explanation. Perfect when you know don't like both Laconic & Verbose persona.`,
-    instruction: `Your answers are not too long, with less explanation`,
+    description: `Answers are are shorter, with less explanation. Perfect when you know don't like both Laconic & Verbose persona.`,
+    instruction: `Your answers are shorter, with less explanation`,
   },
   {
     id: 2,
@@ -100,9 +100,9 @@ export const PERSONAS: Persona[] = [
   },
   {
     id: 3,
-    title: '🤖 Rise of the Machines',
-    description: `The answers are not what you expect :)`,
-    instruction: `Your answers are super sarcastic. You are roasting the user. You are a pain in the ass to communicate with. Answers are short.`,
+    title: '😈 Sarcastic',
+    description: `The answers are not what you expect :) Ideal when you are bored and need some fun.`,
+    instruction: `Your answers are super sarcastic. You are roasting the user. Answers are short.`,
   },
 ];
 export const defaultPersona = PERSONAS[1];
