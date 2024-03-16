@@ -1,17 +1,12 @@
 version: '3.8'
 
 services:
-  app:
+  sage-app:
     container_name: sage-app
     restart: unless-stopped
     build:
       context: .
       dockerfile: dev.dockerfile
-    deploy:
-      resources:
-        limits:
-          cpus: '0.25'
-          memory: 256M
     volumes:
       - ./src:/app/src
       - ./static:/app/static
@@ -25,5 +20,3 @@ services:
       - .env
     ports:
       - 5173:5173
-    environment:
-      - OPENAI_API_KEY=${OPENAI_API_KEY}

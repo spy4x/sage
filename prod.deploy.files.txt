@@ -10,4 +10,5 @@ tsconfig.json
 vite.config.ts
 .dockerignore
 prod.dockerfile
+prod.compose.yaml
 .env.prod

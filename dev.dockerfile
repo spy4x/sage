@@ -17,4 +17,4 @@ COPY . .
 
 ENV NODE_ENV development
 
-CMD pnpm dev
+CMD pnpm dev:local

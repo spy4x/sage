@@ -1,50 +1,34 @@
-version: '3.9'
+version: "3.8"
+name: sage
+
+networks:
+  proxy:
+    external: true
 
 services:
-  traefik:
-    container_name: 'traefik'
-    image: 'traefik'
-    restart: unless-stopped
-    command:
-      #      - "--log.level=DEBUG"
-      - '--api.insecure=true'
-      - '--providers.docker=true'
-      - '--providers.docker.exposedbydefault=false'
-      - '--entrypoints.websecure.address=:443'
-      - '--entrypoints.web.address=:80'
-      - '--entrypoints.web.http.redirections.entrypoint.to=websecure'
-      - '--entrypoints.web.http.redirections.entrypoint.scheme=https'
-      - '--entrypoints.web.http.redirections.entrypoint.permanent=true'
-      - '--certificatesresolvers.myresolver.acme.tlschallenge=true'
-      # - "--certificatesresolvers.myresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory"
-      - '--certificatesresolvers.myresolver.acme.email=2spy4x@gmail.com'
-      - '--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json'
-    ports:
-      - '443:443'
-      - '80:80'
-    #      - "8080:8080"
-
-    volumes:
-      - './letsencrypt:/letsencrypt'
-      - '/var/run/docker.sock:/var/run/docker.sock:ro'
-
   sage:
     container_name: sage
     build:
-      context: ./sage
+      context: .
       dockerfile: prod.dockerfile
     restart: unless-stopped
+    networks:
+      - proxy
+      - default
     deploy:
       resources:
         limits:
-          cpus: '0.25'
-          memory: 256M
+          cpus: "0.5"
+          memory: 512M
     env_file:
-      - ./sage/.env.prod
+      - .env.prod
+    security_opt:
+      - no-new-privileges:true
     labels:
-      - 'traefik.enable=true'
-      - 'traefik.http.routers.app.rule=Host(`sage.antonshubin.com`)'
-      - 'traefik.http.routers.app.entrypoints=websecure'
-      - 'traefik.http.routers.app.tls=true'
-      - 'traefik.http.routers.app.tls.certresolver=myresolver'
-      - 'traefik.http.services.app.loadbalancer.server.port=3000'
+      - "traefik.enable=true"
+      - "traefik.docker.network=proxy"
+      - "traefik.http.routers.sage.rule=Host(`${HOSTNAME_SAGE}`)"
+      - "traefik.http.routers.sage.entrypoints=websecure"
+      - "traefik.http.routers.sage.tls=true"
+      - "traefik.http.routers.sage.tls.certresolver=myresolver"
+      - "traefik.http.services.sage.loadbalancer.server.port=3000"
