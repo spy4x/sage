@@ -12,7 +12,7 @@
     "prod:deploy:run": "ssh homelab 'cd apps/sage && docker compose -f prod.compose.yaml build && docker compose --env-file=.env.prod --env-file=../.env -f prod.compose.yaml up -d'",
     "prod:docker": "docker compose -f prod.compose.yaml --env-file=.env.prod up",
     "prod:docker:build": "docker compose -f prod.compose.yaml build",
-    "prod:logs": "docker compose logs -t -f --tail=\"100\" sage",
+    "prod:logs": "ssh homelab 'cd apps/sage && docker compose -f prod.compose.yaml logs -t -f --tail=\"1000\" sage'",
     "test:load": "docker run --name=load --network=host --rm -i grafana/k6 run - <tests/load/k6.js",
     "build": "vite build",
     "preview": "vite preview",

@@ -12,6 +12,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(handleValidationError(parseResult.error), { status: 400 });
   }
   const chat = parseResult.data;
+  console.log(`message:`, chat.messages[chat.messages.length - 1].content);
   // exit if any message is flagged
   const isAnyMessageFlagged = chat.messages.some(message => message.isFlagged);
   if (isAnyMessageFlagged) {
