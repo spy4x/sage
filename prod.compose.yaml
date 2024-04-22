@@ -27,8 +27,9 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=proxy"
-      - "traefik.http.routers.sage.rule=Host(`${HOSTNAME_SAGE}`)"
+      - "traefik.http.routers.sage.rule=Host(`sage.${DOMAIN}`)"
       - "traefik.http.routers.sage.entrypoints=websecure"
       - "traefik.http.routers.sage.tls=true"
       - "traefik.http.routers.sage.tls.certresolver=myresolver"
+      - "traefik.http.routers.sage.middlewares=auth"
       - "traefik.http.services.sage.loadbalancer.server.port=3000"
