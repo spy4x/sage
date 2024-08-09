@@ -71,7 +71,7 @@ export enum Role {
 }
 export enum Model {
   GPT3 = 'gpt-3.5-turbo',
-  GPT4 = 'gpt-4o',
+  GPT4 = 'gpt-4o-2024-08-06',
 }
 export interface Persona {
   id: number;
