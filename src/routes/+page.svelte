@@ -1,37 +1,72 @@
 <script lang="ts">
-  import { AsyncOperationStatus, EntityOperationType, MessageSchema, type Message } from '@shared';
+  import {
+    AsyncOperationStatus,
+    EntityOperationType,
+    MessageContentType,
+    MessageSchema,
+    type Message,
+  } from '@shared';
   import { chats } from '@stores';
   import { onMount } from 'svelte';
-  import {
-    ChatMessage,
-    Debug,
-    IconSend,
-    IconTrash,
-    Loading,
-    ModelSelector,
-    PersonaSelector,
-  } from '@components';
+  import { ChatMessage, Debug, IconSend, IconTrash, Loading, PersonaSelector } from '@components';
   import { isMobile } from '@client/helpers';
 
   let elemChat: HTMLElement;
+  let imageInput: HTMLInputElement;
   let currentMessage = '';
   let messageInput: HTMLTextAreaElement;
+  let imageURL = '';
+  let file: File | null = null;
   $: updateOperation = chats.getOperation($chats.chat.id, EntityOperationType.UPDATE);
 
   function scrollChatBottom(behavior?: ScrollBehavior): void {
     setTimeout(() => elemChat.scrollTo({ top: elemChat.scrollHeight, behavior }), 10);
   }
 
-  function addMessage(): void {
-    const content = currentMessage.trim();
-    if (!content) {
+  async function addMessage(): void {
+    const text = currentMessage.trim();
+    if (!text) {
       return;
     }
-    const message = MessageSchema.parse({ content } satisfies Partial<Message>);
+    const content: Message['content'] = [{ type: MessageContentType.TEXT, text }];
+    // if (imageURL) {
+    //   content.push({
+    //     type: MessageContentType.IMAGE,
+    //     image_url: {
+    //       url: imageURL,
+    //     },
+    //   });
+    // }
+    if (file) {
+      // get base64 of the image
+
+      const reader = new FileReader();
+      const promise = new Promise<string>((resolve, reject) => {
+        reader.onload = () => {
+          resolve(reader.result as string);
+        };
+        reader.onerror = error => {
+          reject(error);
+        };
+      });
+      reader.readAsDataURL(file);
+      const result = await promise;
+      content.push({
+        type: MessageContentType.IMAGE,
+        image_url: {
+          url: result,
+        },
+      });
+    }
+    const message = MessageSchema.parse({
+      content,
+    } satisfies Partial<Message>);
     chats.message({
       ...$chats.chat,
       messages: [...$chats.chat.messages, message],
     });
+    imageURL = '';
+    file = null;
     currentMessage = '';
     resizeTextarea(null, true);
     scrollChatBottom('smooth');
@@ -73,6 +108,33 @@
       ...$chats.chat,
       messages: $chats.chat.messages.filter((_, i) => i !== index),
     });
+  }
+
+  async function uploadImage() {
+    const files = imageInput.files;
+    const formData = new FormData();
+
+    // Append the file to the FormData object
+    if (!files || !files.length) return;
+    file = files[0];
+    formData.append('file', files[0]);
+    try {
+      const response = await fetch('/api/uploads', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error('File upload failed');
+      }
+
+      const result = await response.json();
+      console.log('File upload successful:', result);
+      const { path } = result;
+      imageURL = location.href + path;
+    } catch (error) {
+      console.error('Error uploading file:', error);
+    }
   }
 
   // When DOM mounted, scroll to bottom
@@ -128,6 +190,21 @@
         {/if}
       </div>
       <div class="flex gap-1 items-start">
+        <button
+          on:click={() => imageInput.click()}
+          class="btn variant-primary min-h-[36px]"
+          title="Upload image"
+        >
+          <IconSend />
+          <input
+            bind:this={imageInput}
+            type="file"
+            on:change={uploadImage}
+            name="image"
+            accept="image/*"
+            class="hidden"
+          />
+        </button>
         <textarea
           bind:value={currentMessage}
           bind:this={messageInput}

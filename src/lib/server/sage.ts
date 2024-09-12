@@ -4,6 +4,7 @@ import {
   defaultPersona,
   type JSONValue,
   type Message,
+  MessageContentType,
   MessageSchema,
   Model,
   PERSONAS,
@@ -37,22 +38,31 @@ async function validateUserInput(messages: Message[]): Promise<undefined | Messa
     throw new Error('Last message has no content');
   }
   const startTime = Date.now();
-  const validationResponse = await openai.moderations.create({
-    input: lastMessageContent,
-  });
-  const validation = validationResponse.results[0];
-  if (validation.flagged) {
-    lastMessage.isFlagged = true;
-    lastMessage.durationMs = Date.now() - startTime;
-    return messages;
+  const lastMessageText = lastMessageContent.find(c => c.type === 'text')?.text;
+  if (lastMessageText) {
+    const validationResponse = await openai.moderations.create({
+      input: lastMessageText,
+    });
+    const validation = validationResponse.results[0];
+    if (validation.flagged) {
+      lastMessage.isFlagged = true;
+      lastMessage.durationMs = Date.now() - startTime;
+      return messages;
+    }
   }
+  return undefined;
 }
 
 export function getMessagesWithPersona(chat: Chat): Message[] {
   const persona = PERSONAS.find(p => p.id === chat.personaId) || defaultPersona;
   const personaMessage = MessageSchema.parse({
     role: Role.SYSTEM,
-    content: `Format your answer with Markdown. ${persona.instruction}`,
+    content: [
+      {
+        type: MessageContentType.TEXT,
+        text: `Format your answer with Markdown. ${persona.instruction}`,
+      },
+    ],
   } satisfies Partial<Message>);
   return [personaMessage, ...chat.messages];
 }

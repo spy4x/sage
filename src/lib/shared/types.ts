@@ -113,13 +113,29 @@ export const PERSONAS: Persona[] = [
 ];
 export const defaultPersona = PERSONAS[0];
 
+export enum MessageContentType {
+  TEXT = 'text',
+  IMAGE = 'image_url',
+}
 export const ChatCompletionMessageSchema = z.object({
   role: z.nativeEnum(Role).default(Role.USER),
-  content: z
-    .string()
-    .max(50000)
-    .nullish()
-    .transform(val => (!val ? '' : val)),
+  content: z.string().or(
+    z.array(
+      z
+        .object({
+          type: z.literal(MessageContentType.TEXT),
+          text: z.string().max(50000),
+        })
+        .or(
+          z.object({
+            type: z.literal(MessageContentType.IMAGE),
+            image_url: z.object({
+              url: z.string(),
+            }),
+          }),
+        ),
+    ),
+  ),
   name: z.string().max(100).optional(),
   function_call: z
     .object({

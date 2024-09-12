@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   sage-app:
     container_name: sage-app

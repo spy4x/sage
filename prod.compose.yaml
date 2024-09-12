@@ -1,4 +1,3 @@
-version: "3.8"
 name: sage
 
 networks:
@@ -18,18 +17,18 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "0.5"
+          cpus: '0.5'
           memory: 512M
     env_file:
       - .env.prod
     security_opt:
       - no-new-privileges:true
     labels:
-      - "traefik.enable=true"
-      - "traefik.docker.network=proxy"
-      - "traefik.http.routers.sage.rule=Host(`sage.${DOMAIN}`)"
-      - "traefik.http.routers.sage.entrypoints=websecure"
-      - "traefik.http.routers.sage.tls=true"
-      - "traefik.http.routers.sage.tls.certresolver=myresolver"
-      - "traefik.http.routers.sage.middlewares=auth"
-      - "traefik.http.services.sage.loadbalancer.server.port=3000"
+      - 'traefik.enable=true'
+      - 'traefik.docker.network=proxy'
+      - 'traefik.http.routers.sage.rule=Host(`sage.${DOMAIN}`)'
+      - 'traefik.http.routers.sage.entrypoints=websecure'
+      - 'traefik.http.routers.sage.tls=true'
+      - 'traefik.http.routers.sage.tls.certresolver=myresolver'
+      - 'traefik.http.routers.sage.middlewares=auth'
+      - 'traefik.http.services.sage.loadbalancer.server.port=3000'

@@ -1,7 +1,7 @@
 <script lang="ts">
   import { markdown } from '@client/services';
   import { CopyToClipboard, Debug } from '@components';
-  import { Role, type Message } from '@shared';
+  import { MessageContentType, Role, type Message } from '@shared';
 
   export let message: Message;
   export let index: number;
@@ -39,7 +39,9 @@
       </button>
     </header>
     <div class="message whitespace-pre-wrap">
-      {message.content}
+      {#if message.content[0].type === MessageContentType.TEXT}
+        {message.content[0].text}
+      {/if}
     </div>
   </div>
 {/if}
@@ -55,7 +57,9 @@
       </div>
       <div class="flex gap-3">
         <!-- Copy to clipboard button -->
-        <CopyToClipboard content={message.content} />
+        {#if message.content[0].type === MessageContentType.TEXT}
+          <CopyToClipboard content={message.content[0].text} />
+        {/if}
         <button
           on:click={() => deleteMessage(index)}
           class="btn btn-icon btn-icon-sm text-surface-400"
@@ -75,7 +79,12 @@
       </div>
     </header>
     <div class="message overflow-auto">
-      {@html markdown(message.content)}
+      {#if typeof message.content === 'string'}
+        {@html markdown(message.content)}
+      {/if}
+      {#if message.content[0].type === MessageContentType.TEXT}
+        {@html markdown(message.content[0].text)}
+      {/if}
     </div>
   </div>
 {/if}
@@ -174,10 +183,10 @@ ${JSON.stringify(JSON.parse(message.fnArgs), null, 4)}
 \`\`\``,
           )}
         {/if}
-        {#if message.content}
+        {#if message.content[0].type === MessageContentType.TEXT}
           {@html markdown(
             `\`\`\`json
-${JSON.stringify(JSON.parse(message.content), null, 4)}
+${JSON.stringify(JSON.parse(message.content[0].text), null, 4)}
 \`\`\``,
           )}
         {/if}

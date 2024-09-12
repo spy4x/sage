@@ -33,7 +33,7 @@ FROM deps as final
 
 RUN npm uninstall -g pnpm
 
-USER node
+USER root
 ENV NODE_ENV production
 
 COPY package.json .
