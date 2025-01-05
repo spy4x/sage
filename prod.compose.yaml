@@ -30,5 +30,4 @@ services:
       - 'traefik.http.routers.sage.entrypoints=websecure'
       - 'traefik.http.routers.sage.tls=true'
       - 'traefik.http.routers.sage.tls.certresolver=myresolver'
-      - 'traefik.http.routers.sage.middlewares=auth'
       - 'traefik.http.services.sage.loadbalancer.server.port=3000'
